@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Crosreff</title>
+    <link rel="stylesheet" type="text/css" href="/css/style.css">
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:300' rel='stylesheet' type='text/css'>
+  </head>
+  <body>
+    <div class="container">
+      <fieldset>
+        <h1>Crossref data for 'works'</h1>
+        <hr>
+        <% let dataNum = 1; Object.keys(data).forEach(key => { %>
+          <ul>
+            <li>
+              <b>Title</b>: <u><%= data[key].title %></u>
+              <ul>
+                <li><b>DOI</b>: <%= data[key].DOI %></li>
+                <li>
+                  <% let authors = data[key].author %>
+                  <b>Author</b>: 
+                  <% if (authors !== undefined) { 
+                    for (let i=0; i < authors.length; i++) {
+                      __append(data[key].author[i].given +' '+data[key].author[i].family + ', ')
+                    }
+                  } else { 
+                    __append('-') 
+                  } %>
+                </li>
+                
+                <% if (data[key].ISSN !== undefined) {
+                  __append(`<li><b>ISSN:</b> ${data[key].ISSN}</li>`)
+                } %>
+
+                <% if (data[key].ISBN !== undefined) {
+                  __append(`<li><b>ISBN:</b> ${data[key].ISBN}</li>`)
+                } %>
+
+                <% if (data[key].subject !== undefined) {
+                  __append(`<li><b>Subject:</b> ${data[key].subject}</li>`)
+                } %>
+
+                <% if (data[key].archive !== undefined) {
+                  __append(`<li><b>Archive:</b> ${data[key].archive}</li>`)
+                } %>
+
+                <li><b>URL:</b> <a href="<%= data[key].URL %>"><%= data[key].URL %></a></li>
+                <li><b>Publisher</b>: <%= data[key].publisher %></li>
+
+                <% if (data[key]["publisher-location"] !== undefined) {
+                  __append(`<li><b>Publisher location:</b> ${data[key]["publisher-location"]}</li>`)
+                } %>
+                
+                <% if (data[key].issue !== undefined) {
+                  __append(`<li><b>Issue:</b> ${data[key].issue}</li>`)
+                } %>
+                
+                <% if (data[key].license !== undefined) { %>
+                  <li>
+                    <b>License:</b> 
+                    <ul>
+                      <% for (let l=0, lcs=data[key].license.length; l < lcs; l++) { %>
+                        <li><b>URL:</b> <%= data[key].license[l].URL %></li>
+                        <li><b>Start:</b> <%= data[key].license[l].start["date-time"] %></li>
+                        <li><b>Timestamp:</b> <%= data[key].license[l].start.timestamp %></li>
+                        <% if ((l+1) < lcs) { %>
+                          <hr style="margin-left:-15px" width="230">
+                        <% } %>
+                      <% } %>
+                    </ul>
+                  </li>
+                <% } %>
+
+                <li><b>Type:</b> <%= data[key].type %></li>
+
+                <% if (data[key].created !== undefined) { %>
+                  <li><b>Created:</b> <%= data[key].created["date-time"] %></li>
+                <% } %>
+
+                <li><b>Prefix:</b> <%= data[key].prefix %></li>
+
+                <% if (data[key].volume !== undefined) {
+                  __append(`<li><b>Volume:</b> ${data[key].volume}</li>`)
+                } %>
+
+                <% if (data[key].funder !== undefined) { %>
+                  <li>
+                    <b>Funder:</b> 
+                    <ul>
+                      <% for (f=0, funders=data[key].funder.length; f < funders; f++) { %>
+                        <li><b>DOI:</b> <%= data[key].funder[f].DOI %></li>
+                        <li><b>Name:</b> <%= data[key].funder[f].name %></li>
+                        <li><b>DOI asserted by:</b> <%= data[key].funder[f]["doi-asserted-by"] %></li>
+                        <li><b>Award:</b> <%= data[key].funder[f].award %></li>
+                        <% if ((f+1) < funders) { %>
+                          <hr style="margin-left:-15px" width="230">
+                        <% } %>
+                      <% } %>
+                    </ul>
+                  </li>
+                <% } %>
+                
+                <% if(data[key].abstract !== undefined) { %>
+                  <li><b>Abstract:</b> <%= data[key].abstract.replace(/(<([^>]+)>)/ig,"").substring(0, 100) %> [...]</li>
+                <% } %>
+
+                <% if (data[key].member !== undefined) {
+                  __append(`<li><b>Member:</b> ${data[key].member}</li>`)
+                } %>
+
+                <% if (data[key].subtitle !== undefined) {
+                  __append(`<li><b>Subtitle:</b> ${data[key].subtitle}</li>`)
+                } %>
+
+                <% if (data[key]["published-online"] !== undefined) {
+                  __append(`<li><b>Publish online:</b> ${data[key]["published-online"]["date-parts"]}</li>`)
+                } %>
+
+                <% if (data[key].reference !== undefined) {
+                  __append(`<li><b>Reference:</b> </li>`); %>
+                  <button onclick="showHide('refs'+<%= dataNum %>)">+</button>
+                  <ul id="refs<%= dataNum %>" style="display: none;">
+                    <% for (r=0, refs=data[key].reference.length; r < refs; r++) {
+                      __append(`<li><b>Key:</b> ${data[key].reference[r].key}</li>`);
+
+                      if (data[key].reference[r].author !== undefined) {
+                        __append(`<li><b>Author:</b> ${data[key].reference[r].author}</li>`);
+                      }
+
+                      if (data[key].reference[r]["volume-title"] !== undefined) {
+                        __append(`<li><b>Volume title:</b> ${data[key].reference[r]["volume-title"]}</li>`);
+                      }
+
+                      if (data[key].reference[r].DOI !== undefined) {
+                        __append(`<li><b>DOI:</b> ${data[key].reference[r].DOI}</li>`);
+                      }
+
+                      if (data[key].reference[r].year !== undefined) {
+                        __append(`<li><b>Year:</b> ${data[key].reference[r].year}</li>`);
+                      }
+
+                      if (data[key].reference[r]["doi-asserted-by"] !== undefined) {
+                        __append(`<li><b>DOI asserted by:</b> ${data[key].reference[r]["doi-asserted-by"]}</li>`);
+                      }
+
+                      if ((r+1) < refs) {
+                        __append("<hr style=\"margin-left:-15px\" width=\"230\">");
+                      }
+
+                    } %>
+                  </ul>
+                <% } %>
+
+              </ul>
+            </li>
+          </ul>
+        <% dataNum++; }) %>
+        <center>
+          <% for (pages=1; pages < 11; pages++) { %>
+            <% if (pages === 1) { %>
+              <a href="/" <% if (page === pages) __append('style="background: grey"') %>><%= pages %></a> &nbsp;
+            <% } else { %>
+              <a href="/page/<%= pages %>" <% if (page == pages) __append('style="background: grey"') %>><%= pages %></a> &nbsp;
+            <% } %>
+          <% } %>
+        </center>
+      </fieldset>
+    </div>
+    <script>
+      function showHide(elem) {
+        var x = document.getElementById(elem);
+        if (x.style.display === "none") {
+          x.style.display = "block";
+        } else {
+          x.style.display = "none";
+        }
+      } 
+    </script>
+  </body>
+</html>
